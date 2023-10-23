@@ -4,6 +4,7 @@ from deterministic_system.limitCycle import simple_cycle
 from deterministic_system.runge_kutta import rk4
 from stohastic_system.stoh_rk4 import rk4_random
 from stohastic_system.stoh_cycle import make_rk4_stoh_cycle, strip_make_stoh, get_max_and_min_m, get_data_for_3d
+from stohastic_system.ellipse import make_ellipse
 
 
 def show_rk(n, p, h):
@@ -16,9 +17,9 @@ def show_rk(n, p, h):
     :returns: показывает фазовую траекторию
     '''
     x, y = rk4(2, 2, n, p, h)
-    x2, y2 = rk4(2, 20, n, p, h)
-    x3, y3 = rk4(8, 2, n, p, h)
-    x4, y4 = rk4(2, 8, n, p, h)
+    x2, y2 = rk4(2, 3, n, p, h)
+    x3, y3 = rk4(3, 2, n, p, h)
+    x4, y4 = rk4(0.9, 0.9, n, p, h)
     plt.plot(x, y)
     plt.plot(x2, y2)
     plt.plot(x3, y3)
@@ -90,3 +91,7 @@ def show_3d_m(p, eps, delta, h):
     ax.plot(x_arr, y_arr, m_arr, label='', color="blue")
 
     plt.show()
+
+
+def show_dispersion_ellipse(x0, y0, n, p, eps, h):
+    make_ellipse(x0, y0, n, p, eps, h)
