@@ -94,4 +94,7 @@ def show_3d_m(p, eps, delta, h):
 
 
 def show_dispersion_ellipse(x0, y0, n, p, eps, h):
-    make_ellipse(x0, y0, n, p, eps, h)
+    x_arr, y_arr, x, y = make_ellipse(x0, y0, n, p, eps, h)
+    plt.plot(x, y)
+    plt.plot(x_arr, y_arr)
+    plt.show()
