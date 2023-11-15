@@ -25,8 +25,8 @@ def make_ellipse(x0, y0, n, p, eps, h):
     while i < 2 * math.pi:
         z1 = eps * q * math.sqrt(2 * lambda1) * math.cos(i)
         z2 = eps * q * math.sqrt(2 * lambda2) * math.sin(i)
-        xf = x0 + (v2[1] * z1 - z2 * v1[1]) / (v1[0] * v2[1] - v1[1] * v2[0])
-        yf = y0 + (v1[0] * z2 - z1 * v2[0]) / (v1[0] * v2[1] - v1[1] * v2[0])
+        yf = x0 + (v2[1] * z1 - z2 * v1[1]) / (v1[0] * v2[1] - v1[1] * v2[0])
+        xf = y0 + (v1[0] * z2 - z1 * v2[0]) / (v1[0] * v2[1] - v1[1] * v2[0])
         x_arr.append(xf)
         y_arr.append(yf)
         i += 0.001

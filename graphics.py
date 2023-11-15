@@ -94,7 +94,13 @@ def show_3d_m(p, eps, delta, h):
 
 
 def show_dispersion_ellipse(x0, y0, n, p, eps, h):
-    x_arr, y_arr, x, y = make_ellipse(x0, y0, n, p, eps, h)
-    plt.plot(x, y)
-    plt.plot(x_arr, y_arr)
-    plt.show()
+    ep = 0.005
+    while ep < 0.2:
+        x_arr, y_arr, x, y = make_ellipse(x0, y0, n, p, ep, h)
+        plt.plot(x, y)
+        plt.plot(x_arr, y_arr)
+        plt.title(label=f"n={n}, p={p}, eps={ep}, h={h}")
+        plt.savefig(f"{ep}.png")
+        plt.close()
+        ep += 0.005
+    #plt.show()
