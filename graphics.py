@@ -93,14 +93,39 @@ def show_3d_m(p, eps, delta, h):
     plt.show()
 
 
-def show_dispersion_ellipse(x0, y0, n, p, eps, h):
-    ep = 0.005
-    while ep < 0.2:
-        x_arr, y_arr, x, y = make_ellipse(x0, y0, n, p, ep, h)
-        plt.plot(x, y)
-        plt.plot(x_arr, y_arr)
-        plt.title(label=f"n={n}, p={p}, eps={ep}, h={h}")
-        plt.savefig(f"{ep}.png")
-        plt.close()
-        ep += 0.005
-    #plt.show()
+def show_dispersion_ellipse(x0, y0, n, p, ep, h):
+    # ep = 0.5
+    # while ep < 0.8:
+    while ep < 0.02:
+        for i in range(10):
+            x_arr, y_arr, x, y = make_ellipse(x0, y0, n, p, ep, h)
+            plt.plot(x[300000::], y[300000::])
+            plt.plot(x_arr, y_arr)
+            plt.title(label=f"n={n}, p={p}, eps={ep}, h={h}, i={i}")
+            plt.savefig(f"{ep}, №{i}.png")
+            plt.close()
+            print(i)
+        ep += 0.001
+    # plt.show()
+
+
+def show_bifurcation_diagram(p, delta, h):
+    p = 2
+    x_max_arr = [1, 1]
+    x_min_arr = [1, 1]
+    p_arr = [0.001, 1.1]
+    i = 0.0025
+    while p < 5:
+        x_cycle, y_cycle, n = simple_cycle(p, delta, h)
+        x_max_arr.append(max(x_cycle))
+        x_min_arr.append(min(x_cycle))
+        p_arr.append(p)
+        if p > 2:
+            i = 0.05
+        p += i
+        print(p)
+    print(p_arr)
+    print(x_max_arr)
+    plt.plot(p_arr, x_max_arr, color="black")
+    plt.plot(p_arr, x_min_arr, color="black")
+    plt.show()

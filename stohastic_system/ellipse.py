@@ -13,12 +13,12 @@ def make_ellipse(x0, y0, n, p, eps, h):
     q = math.sqrt(-math.log(0.05))
     '''бывает такое что собственное число становится меньше нуля'''
     # w - собств числа , v - собств вектора
-    print(w_matrix)
+    #print(w_matrix)
     w, v = np.linalg.eig(np.array(w_matrix))
     lambda1, lambda2 = w[1], w[0]
-    print(lambda1, lambda2)
+    #print(lambda1, lambda2)
     v1, v2 = v[0], v[1]
-    print(v1, v2)
+    #print(v1, v2)
 
     i = 0
     x_arr, y_arr = [], []
@@ -51,13 +51,13 @@ def get_W_matrix(p):
     b = (-110 * p * p - 121) / (2 * p * (-10 * p + 11))
     a = 0.5 - b
     d = 1.1*(-0.5 / p - b)
-    print(a, b, b, d)
+    #print(a, b, b, d)
     w1 = (100 * p * p + 11 * p + 121) / (22 * p - 20 * p * p)
     w2 = (-121 - 110 * p * p) / (22 * p - 20 * p * p)
     w3 = w2
     w4 = -(-121 * p * p - 11 * p - 121) / (22 * p - 20 * p * p)
     """p=0.5"""
-    print(w1, w2, w3, w4)
+    #print(w1, w2, w3, w4)
     # w1, w2, w3, w4 = 101 / 4, -99 / 4, -99 / 4, 209 / 8
     'p=1.05'
     #w1, w2, w3, w4 = 141 / 4, 143 / 4, 143 / 4, 77 / 4
