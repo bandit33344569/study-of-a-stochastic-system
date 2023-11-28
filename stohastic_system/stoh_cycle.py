@@ -98,11 +98,11 @@ def strip_make_stoh(p, eps, delta, h):
     return m_arr, x_band1_arr, x_band2_arr, y_band1_arr, y_band2_arr
 
 
-def make_rk4_stoh_cycle(p, eps, delta, h):
-    x_arr, y_arr, n = simple_cycle(p, delta, h)
-    x2r0 = x_arr[10]
-    y2r0 = y_arr[10]
-    x2, y2, t = rk4_random(x2r0, y2r0, 100000, p, eps, h)
+def make_rk4_stoh_cycle(p, eps, delta, h, n):
+    x_arr, y_arr, u = simple_cycle(p, delta, h)
+    x2r0 = x_arr[1000]
+    y2r0 = y_arr[1000]
+    x2, y2, t = rk4_random(x2r0, y2r0, n, p, eps, h)
     return x2, y2
 
 

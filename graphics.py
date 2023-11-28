@@ -41,6 +41,15 @@ def show_limit_cycle(p, delta, h):
     plt.close()
 
 
+def show_stoh_cycle(p, eps, delta, h, n):
+    x_stoh, y_stoh = make_rk4_stoh_cycle(p, eps, delta, h, n)
+    print(len(x_stoh))
+    x, y, n = simple_cycle(p, delta, h)
+    plt.plot(x_stoh[::1000], y_stoh[::1000])
+    plt.plot(x, y)
+    plt.show()
+
+
 def show_stoh_stable_rk(x0, y0, n, p, eps, h):
     '''
     :param x0: асбцисса точки равновесия
