@@ -1,10 +1,11 @@
 import matplotlib.pyplot as plt
-
+import numpy as np
 from deterministic_system.limitCycle import simple_cycle
 from deterministic_system.runge_kutta import rk4
 from stohastic_system.stoh_rk4 import rk4_random
 from stohastic_system.stoh_cycle import make_rk4_stoh_cycle, strip_make_stoh, get_max_and_min_m, get_data_for_3d
 from stohastic_system.ellipse import make_ellipse
+from collections import Counter
 
 
 def show_rk(n, p, h):
@@ -39,6 +40,20 @@ def show_limit_cycle(p, delta, h):
     plt.plot(x, y)
     plt.show()
     plt.close()
+
+
+def show_some_cycles(delta, h):
+    p = 1.1333309
+    i = 0.000000001
+    while p < 1.133331:
+        print(p)
+        x_cycle, y_cycle, n = simple_cycle(p, delta, h)
+        plt.xlim(0, 25)
+        plt.ylim(0, 25)
+        plt.plot(x_cycle, y_cycle, color="black")
+        plt.savefig(f"{p}.png")
+        plt.close()
+        p += i
 
 
 def show_stoh_cycle(p, eps, delta, h, n):
@@ -95,8 +110,7 @@ def show_3d_m(p, eps, delta, h):
     m_arr, x_arr, y_arr = get_data_for_3d(p, eps, delta, h)
     fig = plt.figure()
     ax = fig.add_subplot(111, projection='3d')
-    x, y, n = simple_cycle(p, delta, h)
-    plt.plot(x, y, color="orange")
+    plt.plot(x_arr, y_arr, color="orange")
     ax.plot(x_arr, y_arr, m_arr, label='', color="blue")
 
     plt.show()
@@ -119,22 +133,54 @@ def show_dispersion_ellipse(x0, y0, n, p, ep, h):
 
 
 def show_bifurcation_diagram(p, delta, h):
-    p = 2
-    x_max_arr = [1, 1]
-    x_min_arr = [1, 1]
-    p_arr = [0.001, 1.1]
-    i = 0.0025
-    while p < 5:
+    p = 1.1331
+    x_max_arr = []
+    x_min_arr = []
+    p_arr = []
+    i = 0.00002
+    while p < 1.1345:
+        print(p)
         x_cycle, y_cycle, n = simple_cycle(p, delta, h)
         x_max_arr.append(max(x_cycle))
         x_min_arr.append(min(x_cycle))
         p_arr.append(p)
-        if p > 2:
-            i = 0.05
         p += i
-        print(p)
-    print(p_arr)
-    print(x_max_arr)
     plt.plot(p_arr, x_max_arr, color="black")
     plt.plot(p_arr, x_min_arr, color="black")
     plt.show()
+
+
+def show_FSCH_cycle(eps, delta, h):
+    p_arr = [3, 1.2, 1.3, 1.4, 1.6, 1.8, 2, 2.2, 2.4, 2.6]
+    for p in p_arr:
+        print(p)
+        m_arr, x_arr, y_arr = get_data_for_3d(p, eps, delta, h)
+        plt.plot(x_arr, m_arr)
+        plt.title(label=f"p={p}, h={h}, delta={delta}")
+        plt.savefig(f"{p}.png")
+        plt.close()
+
+
+def show_intersection_diagram(x0, y0, n, p, eps, h):
+    p_arr = [0.1, 0.2, 0.3, 0.4, 0.5, 0.6, 0.7, 0.8, 0.9, 1, 1.05]
+    interval = 50
+    for p in p_arr:
+        x_arr, y_arr, t_arr = rk4_random(x0, y0, n, p, eps, h)
+        min_x, max_x = min(x_arr), max(x_arr)
+        print(min_x, max_x)
+        k = (max_x - min_x) / interval
+        print(k)
+        new_x = []
+        k_arr = []
+        for i in range(interval):
+            new_x.append(0)
+            k_arr.append(min_x)
+            for j in range(100000, len(y_arr)):
+                if 1 + h >= y_arr[j] >= 1 - h and x_arr[j] < min_x + k:
+                    new_x[i] += 1
+            min_x += k
+        print(k_arr)
+        print(new_x)
+        plt.bar(k_arr, new_x, width=k, linewidth=1, edgecolor='k')
+        plt.savefig(f"{p}.png")
+        plt.close()

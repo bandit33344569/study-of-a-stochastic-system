@@ -128,5 +128,7 @@ def get_data_for_3d(p, eps, delta, h):
     a_arr, b_arr = a_b_calc(x_arr, y_arr, n, p)
     alpha_arr, beta_arr = alpha_beta_calc(a_arr, b_arr, n, h)
     C = (alpha_arr[n - 1] * beta_arr[n - 1]) / (1 - alpha_arr[n - 1])
+    print(a_arr[n - 1], b_arr[n - 1], alpha_arr[n - 1], beta_arr[n - 1], C)
     m_arr = calc_m(alpha_arr, beta_arr, C, n)
     return m_arr, x_arr, y_arr
+
