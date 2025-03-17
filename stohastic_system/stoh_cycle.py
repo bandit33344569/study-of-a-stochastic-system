@@ -92,7 +92,6 @@ def strip_make_stoh(p, eps, delta, h):
     alpha_arr, beta_arr = alpha_beta_calc(a_arr, b_arr, n, h)
     C = (alpha_arr[n - 1] * beta_arr[n - 1]) / (1 - alpha_arr[n - 1])
     m_arr = calc_m(alpha_arr, beta_arr, C, n)
-    q = 1.136
     x_band1_arr, x_band2_arr, \
     y_band1_arr, y_band2_arr = calc_strip(x_arr, y_arr, eps, m_arr, p, n)
     return m_arr, x_band1_arr, x_band2_arr, y_band1_arr, y_band2_arr
@@ -100,26 +99,29 @@ def strip_make_stoh(p, eps, delta, h):
 
 def make_rk4_stoh_cycle(p, eps, delta, h, n):
     x_arr, y_arr, u = simple_cycle(p, delta, h)
-    x2r0 = x_arr[1000]
-    y2r0 = y_arr[1000]
+    x2r0 = x_arr[10]
+    y2r0 = y_arr[10]
     x2, y2, t = rk4_random(x2r0, y2r0, n, p, eps, h)
-    return x2, y2
+    return x2, y2, x_arr, y_arr
 
 
 def get_max_and_min_m(p, eps, delta, h):
-    p_arr = [2.1, 2.2, 2.3, 2.4, 2.5, 2.6, 2.7, 2.8, 2.9, 3, 3.1, 3.2, 3.4, 3.5, 3.6, 3.7, 3.8, 3.9, 4]
+    p_arr = []
     m_max_arr = []
     m_min_arr = []
-    for p in p_arr:
+    p = 1.289844
+    while p < 1.289846:
         print(p)
         x_arr, y_arr, n = simple_cycle(p, delta, h)
         a_arr, b_arr = a_b_calc(x_arr, y_arr, n, p)
         alpha_arr, beta_arr = alpha_beta_calc(a_arr, b_arr, n, h)
         C = (alpha_arr[n - 1] * beta_arr[n - 1]) / (1 - alpha_arr[n - 1])
         m_arr = calc_m(alpha_arr, beta_arr, C, n)
-        r_m_arr = m_arr
         m_max_arr.append(max(m_arr))
         m_min_arr.append(min(m_arr))
+        # print(m_max_arr)
+        p_arr.append(p)
+        p += 0.00000001
     return m_max_arr, m_min_arr, p_arr
 
 
@@ -131,4 +133,3 @@ def get_data_for_3d(p, eps, delta, h):
     print(a_arr[n - 1], b_arr[n - 1], alpha_arr[n - 1], beta_arr[n - 1], C)
     m_arr = calc_m(alpha_arr, beta_arr, C, n)
     return m_arr, x_arr, y_arr
-

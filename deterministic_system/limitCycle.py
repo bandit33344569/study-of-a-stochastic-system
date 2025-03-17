@@ -10,8 +10,8 @@ def simple_cycle(p, delta, h):
     :param h: точность рунге-кутты
     :return: массивы координат точек цикла и количество точек в нем
     '''
-    x_prev = 200
-    y_prev = 200
+    x_prev = 50
+    y_prev = 50
     xn, yn = x_prev, y_prev
     x_intersection_prev = 100
     ''''''
@@ -21,18 +21,14 @@ def simple_cycle(p, delta, h):
         k, l = rk_calc(h, x_prev, y_prev, p)
         xn = x_prev + k
         yn = y_prev + l
-
         if x_prev > 1 and xn > 1 and ((yn - 1) * (y_prev - 1)) < 0:
             k = (y_prev - yn) / (x_prev - xn)
             b = y_prev - k * xn
             x_intersection = (1 - b) / k
-            # print(x_intersection)
-            # x_intersection = x_prev + ((1 - y_prev) * (x_prev - xn) / (y_prev - yn))
             if math.fabs(x_intersection - x_intersection_prev) >= delta:
                 x_intersection_prev = x_intersection
             else:
                 break
-
     '''снова строим траекторию до первого выполнения условия'''
     x_arr = [xn]
     y_arr = [yn]

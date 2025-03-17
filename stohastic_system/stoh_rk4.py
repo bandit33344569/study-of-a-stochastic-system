@@ -33,12 +33,16 @@ def rk4_random(x0, y0, n, p, eps, h):
         xn1rk = x0 + k
         r1 = math.sqrt(-2 * math.log(a)) * math.cos(2 * math.pi * b)
         xn1 = xn1rk + eps * math.sqrt(h) * r1
-        x.append(xn1)
 
         yn1rk = y0 + l
         r2 = math.sqrt(-2 * math.log(a)) * math.sin(2 * math.pi * b)
         yn1 = yn1rk + eps * math.sqrt(h) * r2
-        y.append(yn1)
         time += h
+        if xn1 < 0:
+            xn1 = 0
+        if yn1 < 0:
+            yn1 = 0
+        x.append(xn1)
+        y.append(yn1)
         time_array.append(time)
     return x, y, time_array

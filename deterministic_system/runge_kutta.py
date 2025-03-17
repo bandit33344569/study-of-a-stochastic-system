@@ -18,7 +18,7 @@ def rk_calc(h, x, y, p):
     l4 = h * g(x + k3, y + l3, p)
 
     k = (k1 + 2 * k2 + 2 * k3 + k4) / 6
-    L = ((l1 + 2 * l2 + 2 * l3 + l4) / 6)
+    L = (l1 + 2 * l2 + 2 * l3 + l4) / 6
     return k, L
 
 
