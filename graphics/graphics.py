@@ -5,6 +5,7 @@ from stohastic_system.stoh_rk4 import rk4_random
 from stohastic_system.stoh_cycle import make_rk4_stoh_cycle, strip_make_stoh, get_max_and_min_m, get_data_for_3d
 from stohastic_system.ellipse import make_ellipse
 from stohastic_system.ellipse import get_own_numbers
+import numpy as np
 
 
 def show_W_own_nubmers(x0, y0, n, p, eps, h):
@@ -33,17 +34,50 @@ def show_W_own_nubmers(x0, y0, n, p, eps, h):
     plt.close()
 
 
-def show_rk(n, p, h):
+def deterministic_more_solutions(n, p, q, h):
     '''
+    :param n:
+    :param p:
+    :param q:
+    :param h:
+    :return: должен показывать точки графиков которые проходят длинную траекторию и маленькую
+    '''
+    for x0 in np.arange(0.1, 1, 4):
+        for y0 in np.arange(0.0115 + 0.00025, 0.08, 0.0005):
+            print(x0, y0)
+            x, y = rk4(x0, y0, n, p, q, h)
+            plt.plot(x, y, color='#ff7f0e')
+        for y0 in np.arange(0.0001, 0.0115 + 0.00025, 0.0005):
+            print(x0, y0)
+            x, y = rk4(x0, y0, n, p, q, h)
+            plt.plot(x, y, color='#1f77b4')
+    # x, y = rk4(100, 100, 2000000, p, q, h)
+    # plt.plot(x, y, color='k')
+    # x2, y2 = rk4(0.000000001, 0.000000001, 4000000, p, q, h)
+    # plt.plot(x2, y2, color='aquamarine')
+    x, y = rk4(0.1, 0.01167, 200000, p, q, h)
+    plt.plot(x, y, color='r', linewidth=5)
+    plt.plot(1, 1, 'o', markersize=10, color='k')
+    plt.title(f"p = {p}, q = {q}")
+    plt.xlabel('x', fontsize=10)
+    plt.ylabel('y', fontsize=10)
+    plt.savefig(f"q={q},p={p}.png")
+    plt.show()
+    plt.close()
+
+
+def show_rk(n, p, q, h):
+    '''
+    :param q:
     :param n:  количество итераций метода Рунге_Кутта
     :param p:  параметр системы
     :param h:  точность
     :returns: показывает фазовую траекторию
     '''
-    x, y = rk4(2, 2, n, p, h)
-    x2, y2 = rk4(2, 3, n, p, h)
-    x3, y3 = rk4(3, 2, n, p, h)
-    x4, y4 = rk4(0.9, 0.9, n, p, h)
+    x, y = rk4(2, 2, n, p, q, h)
+    x2, y2 = rk4(2, 3, n, p, q, h)
+    x3, y3 = rk4(3, 2, n, p, q, h)
+    x4, y4 = rk4(0.9, 0.9, n, p, q, h)
     plt.plot(x, y)
     plt.plot(x2, y2)
     plt.plot(x3, y3)
