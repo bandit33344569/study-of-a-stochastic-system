@@ -1,6 +1,8 @@
+import pickle
+
 import numpy as np
 from matplotlib import pyplot as plt
-
+import csv
 from Colored_noise.colored_cycle import make_rk4_colored_cycle
 from Colored_noise.colored_rk4 import rk4_random_colored_noise
 from deterministic_system.limitCycle import simple_cycle
@@ -29,6 +31,58 @@ def show_colored_stable_rk(x0, y0, n, p, q, eps, h, a):
     plt.close()
 
 
+def log_rk4_colored_distribution(x0, y0, n, p, q, eps, h, a):
+    start = -4
+    end = 4
+    num_points_per_decade = 300
+    points = 200
+    step = int((n - 10000) / points)
+    total_points = num_points_per_decade * (end - start + 1)
+    a_range = np.logspace(start, end, num=total_points)
+    results = {
+        'a': [],
+        'x': [],
+        'y': []
+    }
+
+    # Вычисления
+    for a in a_range:
+        print(a)
+        x, y, z, t_arr = rk4_random_colored_noise(x0, y0, n, p, q, eps, h, a)
+        results['a'].append(a)
+        results['x'].append(x[10000::step])  # Сохраняем только после 10000 шагов
+        results['y'].append(y[10000::step])
+
+    # Сохранение данных
+    filename = f"data_p{p}_q{q}_eps{eps}.pkl"
+    with open(filename, "wb") as f:
+        pickle.dump(results, f)
+
+    # График для x
+    fig1, ax1 = plt.subplots(figsize=(6, 6))
+    for i, x_vals in enumerate(results['x']):
+        ax1.plot([a_range[i]] * len(x_vals), x_vals, 'b.', markersize=3)
+    ax1.set_xscale('log')
+    ax1.set_title(f"x vs a\n(p={p}, q={q}, ε={eps})")
+    ax1.set_xlabel('a (log scale)')
+    ax1.set_ylabel('x')
+    fig1.tight_layout()
+    fig1.savefig(f"x_p{p}_q{q}_eps{eps}_distribution.png", dpi=300, bbox_inches='tight')
+    plt.close(fig1)
+
+    # График для y
+    fig2, ax2 = plt.subplots(figsize=(6, 6))
+    for i, y_vals in enumerate(results['y']):
+        ax2.plot([a_range[i]] * len(y_vals), y_vals, 'r.', markersize=3)
+    ax2.set_xscale('log')
+    ax2.set_title(f"y vs a\n(p={p}, q={q}, ε={eps})")
+    ax2.set_xlabel('a (log scale)')
+    ax2.set_ylabel('y')
+    fig2.tight_layout()
+    fig2.savefig(f"y_p{p}_q{q}_eps{eps}_distribution.png", dpi=300, bbox_inches='tight')
+    plt.close(fig2)
+
+
 def log_rk4_colored_dispersion(x0, y0, n, p, q, eps, h, a):
     '''
     рисует график дисперсии значений x, в кадом значении a, по логарифмическому масшатбу
@@ -42,10 +96,10 @@ def log_rk4_colored_dispersion(x0, y0, n, p, q, eps, h, a):
     :param a:
     :return:
     '''
-    num_iterations = 40
-    start = -4  # 10^1
-    end = 4  # 10^3
-    num_points_per_decade = 100
+    num_iterations = 1
+    start = -4
+    end = 4
+    num_points_per_decade = 200
     total_points = num_points_per_decade * (end - start + 1)
     values = np.logspace(start, end, num=total_points)
     mean_deviation_values = []  # Для хранения математического ожидания отклонения от 1
@@ -69,7 +123,7 @@ def log_rk4_colored_dispersion(x0, y0, n, p, q, eps, h, a):
             sum_deviation_squared += np.sum(deviation ** 2)
 
         # Вычисляем математическое ожидание отклонения от 1
-        num_points = (n-10000) * num_iterations
+        num_points = (n - 10000) * num_iterations
         E_deviation = sum_deviation / num_points
 
         # Вычисляем дисперсию отклонений
@@ -89,6 +143,12 @@ def log_rk4_colored_dispersion(x0, y0, n, p, q, eps, h, a):
     max_variance_value = variance_values[max_variance_index]
 
     print(f"Максимальная дисперсия: {max_variance_value:.6f} при a = {max_variance_a:.6f}")
+    # Сохраняем данные в файл CSV
+    with open(f'data_p={p}_q={q}_eps={eps}.csv', 'w', newline='') as file:
+        writer = csv.writer(file)
+        writer.writerow(['a', 'Mean Deviation', 'Variance'])  # Заголовок
+        for a_val, mean_dev, var in zip(values, mean_deviation_values, variance_values):
+            writer.writerow([a_val, mean_dev, var])
 
     # Рисуем графики
     plt.xscale('log')  # Логарифмическая шкала по оси x
@@ -109,7 +169,7 @@ def log_rk4_colored_dispersion(x0, y0, n, p, q, eps, h, a):
     plt.title(f"p={p}, q={q}, eps={eps}")
     plt.xlabel('a', fontsize=10)
     plt.ylabel('dispersion', fontsize=10)
-    plt.savefig(f"p={p}, q={q}, eps={eps} dispersion.png")
+    plt.savefig(f"p={p}, q={q}, eps={eps} dispersion2.png")
     plt.show()
     plt.close()
 

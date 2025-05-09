@@ -4,7 +4,7 @@ import random
 from deterministic_system.runge_kutta import rk_calc
 
 
-def rk4_random(x0, y0, n, p, eps, h):
+def rk4_random(x0, y0, n, p,q, eps, h):
     '''
     :param x0: асбцисса точки равновесия
     :param y0: оридната тчоки равновесия
@@ -28,7 +28,7 @@ def rk4_random(x0, y0, n, p, eps, h):
         x0 = xn1
         y0 = yn1
 
-        k, l = rk_calc(h, x0, y0, p)
+        k, l = rk_calc(h, x0, y0, p,q)
 
         xn1rk = x0 + k
         r1 = math.sqrt(-2 * math.log(a)) * math.cos(2 * math.pi * b)

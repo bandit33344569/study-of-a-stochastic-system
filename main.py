@@ -1,14 +1,14 @@
 import numpy as np
 
 from Colored_noise.color_noise_graphics import show_colored_stable_rk, \
-    log_rk4_colored_max_x, log_rk4_colored_dispersion
+    log_rk4_colored_max_x, log_rk4_colored_dispersion, log_rk4_colored_distribution
 from graphics.deterministic_graphics import dot_attractor, transition_box
-from graphics.graphics import deterministic_more_solutions
+from graphics.graphics import deterministic_more_solutions, show_rk, show_stoh_stable_rk
 
 
 def main(h, eps, p, q, delta, n, a):
     '''Детерминнированный случай'''
-    # graphics.show_rk(n, p, q, h)
+    # show_rk(n, p, q, h)
     # deterministic_more_solutions(n, p, q,h)
     # dot_attractor(n, p, q, h)
     # graphics.show_bifurcation_diagram(p, delta, h)
@@ -19,7 +19,7 @@ def main(h, eps, p, q, delta, n, a):
     # graphics.show_rk_with_limit_cycle(p, delta, h, n)
 
     '''Стохастический случай: аттрактор - точка'''
-    # graphics.show_stoh_stable_rk(1, 1, n, p, eps, h)
+    # show_stoh_stable_rk(1, 1, n, p,q, eps, h)
     # graphics.show_dispersion_ellipse(1, 1, n, p, eps, h)
     # graphics.show_intersection_diagram(1, 1, n, p, eps, h)
     # graphics.show_W_own_nubmers(1, 1, n, p, eps, h)
@@ -38,11 +38,12 @@ def main(h, eps, p, q, delta, n, a):
     # graphics.show_FSCH_cycle(eps, delta, h)
     '''Цветной шум'''
     # show_colored_stable_rk(1, 1, n, p, q, eps, h, a)
-    #log_rk4_colored_max_x(1, 1, n, p, q, eps, h, a)
-    log_rk4_colored_dispersion(1, 1, n, p, q, eps, h, a)
+    # log_rk4_colored_max_x(1, 1, n, p, q, eps, h, a)
+    #log_rk4_colored_dispersion(1, 1, n, p, q, eps, h, a)
+    log_rk4_colored_distribution(1, 1, n, p, q, eps, h, a)
+
     # show_rk4_colored_with_cycle(p, eps, delta, h, n, a)
 
 
-
 if __name__ == '__main__':
-    main(h=10 ** (-3), eps=10 ** (-2), p=1, q=1, delta=0.0001, n=100000, a=1)
+    main(h=10 ** (-4), eps=10 ** (-2), p=1, q=1, delta=0.0001, n=250000, a=0.0001)

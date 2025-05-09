@@ -85,7 +85,7 @@ def show_rk(n, p, q, h):
     plt.title(f"p = {p}")
     plt.xlabel('x', fontsize=10)
     plt.ylabel('y', fontsize=10)
-    plt.show()
+    plt.savefig(f"q = {q}.png")
     plt.close()
 
 
@@ -148,7 +148,7 @@ def show_stoh_cycle(p, eps, delta, h, n):
     plt.close()
 
 
-def show_stoh_stable_rk(x0, y0, n, p, eps, h):
+def show_stoh_stable_rk(x0, y0, n, p,q, eps, h):
     '''
     :param x0: асбцисса точки равновесия
     :param y0: оридната тчоки равновесия
@@ -158,9 +158,9 @@ def show_stoh_stable_rk(x0, y0, n, p, eps, h):
     :param h:   точность рунге
     :return: рисунок стохастической фазовой траектории
     '''
-    x, y, t_arr = rk4_random(x0, y0, n, p, eps, h)
+    x, y, t_arr = rk4_random(x0, y0, n, p,q, eps, h)
     plt.plot(x, y)
-    plt.axis([0, 10, 0, 10])
+    plt.axis([0, 20, 0, 20])
     plt.title(f"p={p}")
     plt.xlabel('x', fontsize=10)
     plt.ylabel('y', fontsize=10)
