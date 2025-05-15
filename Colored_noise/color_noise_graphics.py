@@ -3,6 +3,8 @@ import pickle
 import numpy as np
 from matplotlib import pyplot as plt
 import csv
+
+from Colored_noise.FSCH_color import calculate_eigen_value, find_W_color, calculate_w
 from Colored_noise.colored_cycle import make_rk4_colored_cycle
 from Colored_noise.colored_rk4 import rk4_random_colored_noise
 from deterministic_system.limitCycle import simple_cycle
@@ -193,3 +195,99 @@ def log_rk4_colored_max_x(x0, y0, n, p, q, eps, h, a):
     plt.savefig(f"p={p}, q={q}, eps={eps} dynamic.png")
     # plt.show()
     plt.close()
+
+
+def paint_eigen_values_color(x0, y0, n, p, q, eps, h, a):
+    start = -4
+    end = 4
+    num_points_per_decade = 200
+    total_points = num_points_per_decade * (end - start + 1)
+    values = np.logspace(start, end, num=total_points)
+    lambda1_arr = []
+    lambda2_arr = []
+    w11_sym, w12_sym, w21_sym, w22_sym = find_W_color()
+    for a in values:
+        print(a)
+        w11, w12, w21, w22 = calculate_w(eps, a, p, q, w11_sym, w12_sym, w21_sym, w22_sym)
+        lambda1, lambda2 = calculate_eigen_value(w11, w12, w21, w22)
+        lambda1_arr.append(lambda1)
+        lambda2_arr.append(lambda2)
+
+    print(max(lambda1_arr))
+    print(max(lambda2_arr))
+    fig1, ax1 = plt.subplots(figsize=(10, 5))
+    ax1.plot(values, lambda1_arr, label=r'$\lambda_1$', color='blue')
+    ax1.set_title(f"q={q},p={p},eps={eps}", fontsize=14)
+    ax1.set_ylabel(r'$\lambda_1$', fontsize=12)
+    ax1.set_xlabel(r'Параметр $a$', fontsize=12)
+    ax1.grid(True, which='both', linestyle='--', linewidth=0.5)
+    ax1.set_xscale('log')
+    ax1.legend()
+    fig1.savefig(f"eigen_value_lambda1_q={q},p={p},eps={eps}.png")
+    plt.close(fig1)
+
+    # График для lambda2
+    fig2, ax2 = plt.subplots(figsize=(10, 5))
+    ax2.plot(values, lambda2_arr, label=r'$\lambda_2$', color='green')
+    ax2.set_title(f'q={q},p={p},eps={eps}', fontsize=14)
+    ax2.set_ylabel(r'$\lambda_2$', fontsize=12)
+    ax2.set_xlabel(r'Параметр $a$', fontsize=12)
+    ax2.grid(True, which='both', linestyle='--', linewidth=0.5)
+    ax2.set_xscale('log')
+    ax2.legend()
+    fig2.savefig(f"eigen_value_lambda2_q={q},p={p},eps={eps}.png")
+    plt.close(fig2)
+
+
+def compare_eigen_values(x0, y0, n, p, eps, h, ):
+    # Генерация логарифмических значений a
+    q_values = [0.1, 1]
+    start, end = -4, 4
+    num_points_per_decade = 200
+    total_points = num_points_per_decade * (end - start + 1)
+    a_values = np.logspace(start, end, num=total_points)
+
+    # Сбор данных для каждого q
+    results = {q: {'lambda1': [], 'lambda2': []} for q in q_values}
+
+    for q in q_values:
+        w11_sym, w12_sym, w21_sym, w22_sym = find_W_color()
+        for a in a_values:
+            w11, w12, w21, w22 = calculate_w(eps, a, p, q, w11_sym, w12_sym, w21_sym, w22_sym)
+            lambda1, lambda2 = calculate_eigen_value(w11, w12, w21, w22)
+            results[q]['lambda1'].append(lambda1)
+            results[q]['lambda2'].append(lambda2)
+
+    # Построение графиков
+    fig1, ax1 = plt.subplots(figsize=(10, 5))
+    fig2, ax2 = plt.subplots(figsize=(10, 5))
+
+    colors = {'0.1': 'blue', '1.0': 'red'}  # Цвета для разных q
+
+    for q in q_values:
+        color = colors.get(str(q), 'black')
+        ax1.plot(a_values, results[q]['lambda1'], label=f'q = {q}', color=color)
+        ax2.plot(a_values, results[q]['lambda2'], label=f'q = {q}', color=color)
+
+    # Настройка графика для lambda1
+    ax1.set_title(f'Сравнение $\lambda_1$ при разных $q$', fontsize=14)
+    ax1.set_ylabel(r'$\lambda_1$', fontsize=12)
+    ax1.set_xlabel(r'Параметр $a$', fontsize=12)
+    ax1.grid(True, which='both', linestyle='--', linewidth=0.5)
+    ax1.set_xscale('log')
+    ax1.legend()
+
+    # Настройка графика для lambda2
+    ax2.set_title(f'Сравнение $\lambda_2$ при разных $q$', fontsize=14)
+    ax2.set_ylabel(r'$\lambda_2$', fontsize=12)
+    ax2.set_xlabel(r'Параметр $a$', fontsize=12)
+    ax2.grid(True, which='both', linestyle='--', linewidth=0.5)
+    ax2.set_xscale('log')
+    ax2.legend()
+
+    # Сохранение графиков
+    fig1.savefig(f"compare_lambda1_q={q_values[0]}_vs_{q_values[1]}_p={p}_eps={eps}.png")
+    fig2.savefig(f"compare_lambda2_q={q_values[0]}_vs_{q_values[1]}_p={p}_eps={eps}.png")
+
+    plt.close(fig1)
+    plt.close(fig2)

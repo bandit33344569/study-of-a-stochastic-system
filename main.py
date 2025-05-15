@@ -1,7 +1,8 @@
 import numpy as np
 
 from Colored_noise.color_noise_graphics import show_colored_stable_rk, \
-    log_rk4_colored_max_x, log_rk4_colored_dispersion, log_rk4_colored_distribution
+    log_rk4_colored_max_x, log_rk4_colored_dispersion, log_rk4_colored_distribution, paint_eigen_values_color, \
+    compare_eigen_values
 from graphics.deterministic_graphics import dot_attractor, transition_box
 from graphics.graphics import deterministic_more_solutions, show_rk, show_stoh_stable_rk
 
@@ -40,10 +41,12 @@ def main(h, eps, p, q, delta, n, a):
     # show_colored_stable_rk(1, 1, n, p, q, eps, h, a)
     # log_rk4_colored_max_x(1, 1, n, p, q, eps, h, a)
     #log_rk4_colored_dispersion(1, 1, n, p, q, eps, h, a)
-    log_rk4_colored_distribution(1, 1, n, p, q, eps, h, a)
+    #log_rk4_colored_distribution(1, 1, n, p, q, eps, h, a)
+    #paint_eigen_values_color(1, 1, n, p, q, eps, h, a)
+    compare_eigen_values(1, 1, n, p, eps, h, )
 
     # show_rk4_colored_with_cycle(p, eps, delta, h, n, a)
 
 
 if __name__ == '__main__':
-    main(h=10 ** (-4), eps=10 ** (-2), p=1, q=1, delta=0.0001, n=250000, a=0.0001)
+    main(h=10 ** (-4), eps=10 ** (-1), p=1, q=1, delta=0.0001, n=250000, a=0.0001)
