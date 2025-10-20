@@ -160,7 +160,7 @@ def show_stoh_stable_rk(x0, y0, n, p,q, eps, h):
     '''
     x, y, t_arr = rk4_random(x0, y0, n, p,q, eps, h)
     plt.plot(x, y)
-    plt.axis([0, 20, 0, 20])
+    plt.axis([-0.1, 20, -0.1, 20])
     plt.title(f"p={p}")
     plt.xlabel('x', fontsize=10)
     plt.ylabel('y', fontsize=10)

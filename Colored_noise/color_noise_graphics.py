@@ -24,7 +24,7 @@ def show_colored_stable_rk(x0, y0, n, p, q, eps, h, a):
     '''
     x, y, z, t_arr = rk4_random_colored_noise(x0, y0, n, p, q, eps, h, a)
     plt.plot(x, y)
-    # plt.axis([0.7, 1.3, 0.7, 1.3])
+    plt.axis([0, 25, 0, 25])
     plt.title(f"p={p},q = {q}, a={a}, eps={eps}")
     plt.xlabel('x', fontsize=10)
     plt.ylabel('y', fontsize=10)
@@ -65,8 +65,8 @@ def log_rk4_colored_distribution(x0, y0, n, p, q, eps, h, a):
     for i, x_vals in enumerate(results['x']):
         ax1.plot([a_range[i]] * len(x_vals), x_vals, 'b.', markersize=3)
     ax1.set_xscale('log')
-    ax1.set_title(f"x vs a\n(p={p}, q={q}, ε={eps})")
-    ax1.set_xlabel('a (log scale)')
+    ax1.set_title(f"(p={p}, q={q}, ε={eps})")
+    ax1.set_xlabel('a')
     ax1.set_ylabel('x')
     fig1.tight_layout()
     fig1.savefig(f"x_p{p}_q{q}_eps{eps}_distribution.png", dpi=300, bbox_inches='tight')
@@ -240,14 +240,12 @@ def paint_eigen_values_color(x0, y0, n, p, q, eps, h, a):
 
 
 def compare_eigen_values(x0, y0, n, p, eps, h, ):
-    # Генерация логарифмических значений a
     q_values = [0.1, 1]
     start, end = -4, 4
     num_points_per_decade = 200
     total_points = num_points_per_decade * (end - start + 1)
     a_values = np.logspace(start, end, num=total_points)
 
-    # Сбор данных для каждого q
     results = {q: {'lambda1': [], 'lambda2': []} for q in q_values}
 
     for q in q_values:
@@ -258,18 +256,16 @@ def compare_eigen_values(x0, y0, n, p, eps, h, ):
             results[q]['lambda1'].append(lambda1)
             results[q]['lambda2'].append(lambda2)
 
-    # Построение графиков
     fig1, ax1 = plt.subplots(figsize=(10, 5))
     fig2, ax2 = plt.subplots(figsize=(10, 5))
 
-    colors = {'0.1': 'blue', '1.0': 'red'}  # Цвета для разных q
+    colors = {'0.1': 'blue', '1.0': 'red'}
 
     for q in q_values:
         color = colors.get(str(q), 'black')
         ax1.plot(a_values, results[q]['lambda1'], label=f'q = {q}', color=color)
         ax2.plot(a_values, results[q]['lambda2'], label=f'q = {q}', color=color)
 
-    # Настройка графика для lambda1
     ax1.set_title(f'Сравнение $\lambda_1$ при разных $q$', fontsize=14)
     ax1.set_ylabel(r'$\lambda_1$', fontsize=12)
     ax1.set_xlabel(r'Параметр $a$', fontsize=12)
@@ -277,7 +273,6 @@ def compare_eigen_values(x0, y0, n, p, eps, h, ):
     ax1.set_xscale('log')
     ax1.legend()
 
-    # Настройка графика для lambda2
     ax2.set_title(f'Сравнение $\lambda_2$ при разных $q$', fontsize=14)
     ax2.set_ylabel(r'$\lambda_2$', fontsize=12)
     ax2.set_xlabel(r'Параметр $a$', fontsize=12)

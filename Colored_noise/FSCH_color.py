@@ -15,15 +15,11 @@ def find_W_color():
 
     # Вектор чувствительности к шуму g
     g = sp.Matrix([1, 0])
-    #sp.pretty_print(g)
     # Единичная матрица
     I = sp.eye(2)
-    #sp.pretty_print(I)
     # Обратные матрицы
     inv_F_T_minus_aI = (F.T - a * I).inv()
     inv_F_minus_aI = (F - a * I).inv()
-    #sp.pretty_print(inv_F_minus_aI)
-    #sp.pretty_print(inv_F_T_minus_aI)
     # Члены уравнения
     term1 = (g * g.T) * inv_F_T_minus_aI
     term2 = (inv_F_minus_aI * g) * g.T
@@ -33,7 +29,7 @@ def find_W_color():
     w11, w12, w21, w22 = sp.symbols('w11 w12 w21 w22')
     W = sp.Matrix([
         [w11, w12],
-        [w21, w22]  # Матрица W симметрична
+        [w21, w22]
     ])
 
     # Составление уравнения
@@ -47,6 +43,11 @@ def find_W_color():
     w12_sol = sp.simplify(sp.factor(solutions[w12]))
     w21_sol = sp.simplify(sp.factor(solutions[w21]))
     w22_sol = sp.simplify(sp.factor(solutions[w22]))
+
+    print(w11_sol)
+    print(w12_sol)
+    print(w21_sol)
+    print(w22_sol)
 
     # Возврат решений
     return w11_sol, w12_sol, w21_sol, w22_sol
