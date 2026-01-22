@@ -4,7 +4,7 @@ import numpy as np
 from matplotlib import pyplot as plt
 import csv
 
-from Colored_noise.FSCH_color import calculate_eigen_value, find_W_color, calculate_w
+from Colored_noise.FSCH_color import calculate_eigen_value, find_W_color, calculate_w, get_colored_ellipse_points
 from Colored_noise.colored_cycle import make_rk4_colored_cycle
 from Colored_noise.colored_rk4 import rk4_random_colored_noise
 from deterministic_system.limitCycle import simple_cycle
@@ -286,3 +286,45 @@ def compare_eigen_values(x0, y0, n, p, eps, h, ):
 
     plt.close(fig1)
     plt.close(fig2)
+
+
+def show_colored_trajectory_with_ellipse(x0, y0, n, p, q, eps, h, a, P=0.95):
+    """
+    ОТДЕЛЬНАЯ функция: рисует стохастическую траекторию + доверительный эллипс.
+
+    Использование в main():
+    show_colored_trajectory_with_ellipse(1, 1, n, p, q, eps, h, a)
+    """
+    from Colored_noise.colored_rk4 import rk4_random_colored_noise
+    from Colored_noise.FSCH_color import find_W_color, calculate_w
+    import matplotlib.pyplot as plt
+
+    # 1. Генерируем стохастическую траекторию
+    x, y, z, t_arr = rk4_random_colored_noise(x0, y0, n, p, q, eps, h, a)
+
+    # 2. Создаем график
+    plt.figure(figsize=(8, 8))
+    plt.plot(x, y, 'b-', alpha=0.6, linewidth=0.8)
+
+    # 3. Предварительно считаем символьные выражения (один раз)
+    w_syms = find_W_color()
+
+    # 4. Получаем координаты эллипса
+    x_ell, y_ell = get_colored_ellipse_points(p, q, eps, a, center_x=1.0, center_y=1.0, P=P, w_syms=w_syms)
+
+    # 5. Рисуем эллипс и центр
+    if x_ell:
+        plt.plot(x_ell, y_ell, 'r-', linewidth=1, label=f'доверительный эллипс P={P}')
+
+    # 6. Оформление
+    plt.axis([0, 25, 0, 25])
+    plt.title(f'p={p}, q={q}, a={a}, eps={eps}', fontsize=14)
+    plt.xlabel('x', fontsize=12)
+    plt.ylabel('y', fontsize=12)
+    plt.grid(True, alpha=0.3)
+    plt.legend(fontsize=11)
+    plt.axis('equal')
+
+    # 7. Сохранение
+    plt.savefig(f"p={p}_q={q}_eps={eps}_a={a}_trajectory_ellipse.png", dpi=300, bbox_inches='tight')
+    plt.close()

@@ -85,3 +85,65 @@ def calculate_eigen_value(w11, w12, w21, w22):
     lambda1, lambda2 = eigenvalues
     return lambda1, lambda2
 
+
+def get_colored_ellipse_points(p, q, eps, a, center_x=1.0, center_y=1.0, P=0.95, w_syms=None):
+    """
+    Возвращает координаты (x, y) точек доверительного эллипса.
+
+    Параметры:
+      P: доверительная вероятность (например, 0.95 для 95%).
+      w_syms: результат find_W_color() (чтобы не пересчитывать каждый раз).
+    """
+    # 1. Если символьные решения не переданы, считаем их (это может быть долго)
+    if w_syms is None:
+        w_syms = find_W_color()
+
+    w11_s, w12_s, w21_s, w22_s = w_syms
+
+    # 2. Вычисляем числовую матрицу ковариации
+    # calculate_w уже учитывает умножение на eps^2
+    w11, w12, w21, w22 = calculate_w(eps, a, p, q, w11_s, w12_s, w21_s, w22_s)
+    W_num = np.array([[w11, w12],
+                      [w21, w22]], dtype=float)
+
+    # 3. Собственные числа и векторы
+    # Собственные числа ковариационной матрицы — это дисперсии вдоль главных осей
+    vals, vecs = np.linalg.eig(W_num)
+
+    # Сортируем для порядка (lambda1 - большее, lambda2 - меньшее)
+    idx = vals.argsort()[::-1]
+    lambdas = vals[idx]
+    V = vecs[:, idx]
+
+    lambda1, lambda2 = lambdas[0], lambdas[1]
+    v1, v2 = V[:, 0], V[:, 1]  # Собственные векторы (столбцы)
+
+    # Проверка на положительную определенность
+    if lambda1 <= 0 or lambda2 <= 0:
+        print(f"Warning: Non-positive eigenvalues: {lambda1}, {lambda2}. Ellipse cannot be built.")
+        return [], []
+
+    # 4. Масштабный множитель (квантиль хи-квадрат распределения)
+    # R^2 = -2 * ln(1 - P)
+    # Для P=0.95 это ~5.99, для P=0.99 это ~9.21
+    scale_factor = -2 * np.log(1 - P)
+
+    # Длины полуосей
+    r1 = np.sqrt(scale_factor * lambda1)
+    r2 = np.sqrt(scale_factor * lambda2)
+
+    # 5. Генерация точек по параметрическому уравнению
+    # r(theta) = Center + r1*cos(theta)*v1 + r2*sin(theta)*v2
+    theta = np.linspace(0, 2 * np.pi, 200)
+    x_arr = []
+    y_arr = []
+
+    for t in theta:
+        point = np.array([center_x, center_y]) + \
+                r1 * np.cos(t) * v1 + \
+                r2 * np.sin(t) * v2
+        x_arr.append(point[0])
+        y_arr.append(point[1])
+
+    return x_arr, y_arr
+
